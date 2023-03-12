@@ -64,6 +64,18 @@ val md_theme_dark_shadow = Color(0xFF000000)
 val md_theme_dark_surfaceTint = Color(0xFFD4CA51)
 val md_theme_dark_outlineVariant = Color(0xFF49473A)
 val md_theme_dark_scrim = Color(0xFF000000)
-
-
 val seed = Color(0xFF676000)
+
+
+val WorkColor = Color(0xFF75574B)
+val SportsColor = Color(0xFF69A747)
+val HouseColor = Color(0xFFB2DD73)
+val FunColor = Color(0xFF50B1FF)
+val CookingColor = Color(0xFFFFC73A)
+val NotebookColor = Color(0xFFCEBE95)
+val CarColor = Color(0xFFD1D1D1)
+val SchoolColor = Color(0xFFFA705B)
+val LaptopColor = Color(0xFF616161)
+val PlantColor = Color(0xFF82BE5D)
+val ShoppingColor = Color(0xFFFFCA28)
+val BookColor = Color(0xFF996B42)

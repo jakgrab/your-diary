@@ -11,7 +11,7 @@ class Diary : RealmObject {
     @PrimaryKey
     var _id: ObjectId = ObjectId.create()
     var ownerId: String = ""
-    //var moode
+    var affair: String = Affair.WateringPlants.name
     var title: String = ""
     var description: String = ""
     var images: RealmList<String> = realmListOf()
