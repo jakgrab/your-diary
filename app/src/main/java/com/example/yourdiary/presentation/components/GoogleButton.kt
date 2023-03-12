@@ -85,7 +85,7 @@ fun GoogleButton(
 @Preview
 @Composable
 fun GoogleButtonPreview() {
-    GoogleButton() {
+    GoogleButton{
 
     }
 }
