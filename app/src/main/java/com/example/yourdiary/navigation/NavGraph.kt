@@ -37,7 +37,8 @@ fun SetupNavGraph(
             navigateToHome = {
                 navController.popBackStack()
                 navController.navigate(Screen.Home.route)
-            }
+            },
+            onDateLoaded = onDateLoaded
         )
         homeRoute(
             navigateToWrite = { navController.navigate(Screen.Write.route) },
@@ -51,13 +52,20 @@ fun SetupNavGraph(
     }
 }
 
-fun NavGraphBuilder.authenticationRoute(navigateToHome: () -> Unit) {
+fun NavGraphBuilder.authenticationRoute(
+    navigateToHome: () -> Unit,
+    onDateLoaded: () -> Unit
+) {
     composable(route = Screen.Authentication.route) {
         val viewModel: AuthenticationViewModel = viewModel()
         val authenticated by viewModel.authenticated
         val loadingState by viewModel.loadingState
         val oneTapState = rememberOneTapSignInState()
         val messageBarState = rememberMessageBarState()
+
+        LaunchedEffect(key1 = Unit) {
+            onDateLoaded()
+        }
 
         AuthenticationScreen(
             authenticated = authenticated,
