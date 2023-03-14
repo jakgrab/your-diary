@@ -1,14 +1,12 @@
 package com.example.yourdiary.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Shapes
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +22,7 @@ import com.example.yourdiary.model.Affair
 import com.example.yourdiary.model.Diary
 import com.example.yourdiary.ui.theme.Elevation
 import com.example.yourdiary.util.toInstant
+import io.realm.kotlin.ext.realmListOf
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalTime
@@ -33,6 +32,7 @@ import java.util.*
 fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
     var componentHeight by remember { mutableStateOf(0.dp) }
     val localDensity = LocalDensity.current
+    var galleryOpened by remember { mutableStateOf(false) }
 
     Row(modifier = Modifier
         .clickable(
@@ -66,6 +66,19 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
                     maxLines = 6,
                     overflow = TextOverflow.Ellipsis
                 )
+                if (diary.images.isNotEmpty()) {
+                    ShowGalleryButton(
+                        galleryOpened = galleryOpened,
+                        onClick = {
+                            galleryOpened = !galleryOpened
+                        }
+                    )
+                }
+                AnimatedVisibility(visible = galleryOpened) {
+                    Column(modifier = Modifier.padding(14.dp)) {
+                        Gallery(images = diary.images)
+                    }
+                }
             }
         }
 
@@ -105,6 +118,19 @@ fun DiaryHeader(affairName: String, time: Instant) {
     }
 }
 
+@Composable
+fun ShowGalleryButton(
+    galleryOpened: Boolean,
+    onClick: () -> Unit
+) {
+    TextButton(onClick = onClick) {
+        Text(
+            text = if (galleryOpened) "Hide Gallery" else "Show Gallery",
+            style = TextStyle(fontSize = MaterialTheme.typography.bodySmall.fontSize)
+        )
+    }
+}
+
 @Preview
 @Composable
 fun DiaryHolderPreview() {
@@ -122,5 +148,6 @@ fun DiaryHolderPreview() {
                     "porta sapien, eu maximus tellus urna quis est. Nullam vel sapien " +
                     "et neque ultrices placerat. Etiam ac bibendum libero."
         affair = Affair.WateringPlants.name
+        images = realmListOf("", "")
     }, onClick = {})
 }

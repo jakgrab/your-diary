@@ -28,7 +28,6 @@ fun HomeScreen(
         onSignOutClicked = onSignOutClicked
     ) {
         Scaffold(
-            //odifier = Modifier.background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.03f)),
             topBar = {
                 HomeTopBar(onMenuClicked = onMenuClicked)
             },
@@ -40,9 +39,8 @@ fun HomeScreen(
                     )
                 }
             },
-            //containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.23f)
         ) {
-
+            HomeContent(diaryNotes = mapOf(), onClick = {})
         }
     }
 }
