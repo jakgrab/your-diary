@@ -13,11 +13,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.yourdiary.data.repository.Diaries
+import com.example.yourdiary.util.RequestState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
+    diaries: Diaries,
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     onSignOutClicked: () -> Unit,
@@ -39,8 +42,33 @@ fun HomeScreen(
                     )
                 }
             },
-        ) {
-            HomeContent(diaryNotes = mapOf(), onClick = {})
+        ) { padding ->
+            when (diaries) {
+                is RequestState.Success -> {
+                    HomeContent(
+                        paddingValues = padding,
+                        diaryNotes = diaries.data,
+                        onClick = {}
+                    )
+                }
+                is RequestState.Error -> {
+                    EmptyPage(
+                        title = "Error",
+                        subtitle = "${diaries.error.message}"
+                    )
+                }
+                is RequestState.Loading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primaryContainer
+                        )
+                    }
+                }
+                else -> {}
+            }
         }
     }
 }

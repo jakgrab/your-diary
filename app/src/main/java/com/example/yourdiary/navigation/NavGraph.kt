@@ -16,11 +16,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.yourdiary.data.repository.MongoDB
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.yourdiary.presentation.screens.home.HomeScreen
+import com.example.yourdiary.presentation.screens.home.HomeViewModel
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -95,6 +95,9 @@ fun NavGraphBuilder.homeRoute(
     navigateToAuth: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
+        val viewModel: HomeViewModel = viewModel()
+        val diaries by viewModel.diaries
+
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember {
             mutableStateOf(false)
@@ -103,6 +106,7 @@ fun NavGraphBuilder.homeRoute(
 
 
         HomeScreen(
+            diaries = diaries,
             drawerState = drawerState,
             onMenuClicked = {
                 scope.launch { drawerState.open() }
@@ -110,9 +114,11 @@ fun NavGraphBuilder.homeRoute(
             onSignOutClicked = { signOutDialogOpened = true },
             navigateToWrite = navigateToWrite
         )
-        LaunchedEffect(key1 = Unit) {
-            MongoDB.configureTheRealm()
-        }
+
+//        LaunchedEffect(key1 = Unit) {
+//            MongoDB.configureTheRealm()
+//        }
+//
         DisplayAlertDialog(
             title = "Sign Out",
             message = "Are you sure you want to Sign Out from your Google Account?",

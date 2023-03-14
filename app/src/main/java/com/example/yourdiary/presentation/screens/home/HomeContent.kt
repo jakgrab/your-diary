@@ -20,6 +20,7 @@ import java.time.LocalDate
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeContent(
+    paddingValues: PaddingValues,
     diaryNotes: Map<LocalDate, List<Diary>>,
     onClick: (String) -> Unit
 ) {
@@ -31,7 +32,10 @@ fun HomeContent(
                     DateHeader(localDate = localDate)
                 }
 
-                items(items = diaries, key = { it._id }) {diary ->
+                items(
+                    items = diaries,
+                    key = { it._id.toString() }
+                ) {diary ->
                     DiaryHolder(diary = diary, onClick = onClick)
                 }
             }
