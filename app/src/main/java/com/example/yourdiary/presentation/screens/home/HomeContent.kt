@@ -1,6 +1,7 @@
 package com.example.yourdiary.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.yourdiary.model.Diary
 import com.example.yourdiary.presentation.components.DiaryHolder
@@ -25,8 +27,22 @@ fun HomeContent(
     onClick: (String) -> Unit
 ) {
     if (diaryNotes.isNotEmpty()) {
-        LazyColumn(modifier = Modifier.padding(horizontal = 24.dp) ) {
-            diaryNotes.forEach {(localDate, diaries) ->
+        LazyColumn(
+            modifier = Modifier
+                .padding(horizontal = 24.dp)
+                .padding(
+                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),// + 24.dp,
+                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),// + 24.dp,
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding()
+                )
+//                .padding(horizontal = 24.dp)
+//                .padding(
+//                    top = paddingValues.calculateTopPadding(),
+//                    bottom = paddingValues.calculateBottomPadding()
+//                )
+        ) {
+            diaryNotes.forEach { (localDate, diaries) ->
 
                 stickyHeader(key = localDate) {
                     DateHeader(localDate = localDate)
@@ -35,7 +51,7 @@ fun HomeContent(
                 items(
                     items = diaries,
                     key = { it._id.toString() }
-                ) {diary ->
+                ) { diary ->
                     DiaryHolder(diary = diary, onClick = onClick)
                 }
             }
@@ -47,7 +63,12 @@ fun HomeContent(
 
 @Composable
 fun DateHeader(localDate: LocalDate) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier
+            .padding(vertical = 14.dp)
+            .background(MaterialTheme.colorScheme.surface),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Column(horizontalAlignment = Alignment.End) {
             Text(
                 text = String.format("%02d", localDate.dayOfMonth),
@@ -75,10 +96,10 @@ fun DateHeader(localDate: LocalDate) {
             )
             Text(
                 text = localDate.year.toString(),
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                    fontWeight = FontWeight.Light
+                    fontWeight = FontWeight.Medium
                 )
             )
         }

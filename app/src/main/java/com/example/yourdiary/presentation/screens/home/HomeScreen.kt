@@ -8,10 +8,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.material3.R
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.example.yourdiary.data.repository.Diaries
 import com.example.yourdiary.util.RequestState
@@ -26,6 +27,7 @@ fun HomeScreen(
     onSignOutClicked: () -> Unit,
     navigateToWrite: () -> Unit
 ) {
+    var padding by remember { mutableStateOf(PaddingValues()) }
     NavigationDrawer(
         drawerState = drawerState,
         onSignOutClicked = onSignOutClicked
@@ -35,18 +37,23 @@ fun HomeScreen(
                 HomeTopBar(onMenuClicked = onMenuClicked)
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = navigateToWrite) {
+                FloatingActionButton(
+                    modifier = Modifier
+                        .padding(end = padding.calculateEndPadding(LayoutDirection.Ltr)),
+                    onClick = navigateToWrite
+                ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "New diary icon"
                     )
                 }
             },
-        ) { padding ->
+        ) {
+            padding = it
             when (diaries) {
                 is RequestState.Success -> {
                     HomeContent(
-                        paddingValues = padding,
+                        paddingValues = it,
                         diaryNotes = diaries.data,
                         onClick = {}
                     )

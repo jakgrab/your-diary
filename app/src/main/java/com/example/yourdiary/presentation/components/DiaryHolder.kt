@@ -34,11 +34,12 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
     val localDensity = LocalDensity.current
     var galleryOpened by remember { mutableStateOf(false) }
 
-    Row(modifier = Modifier
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
-        ) { onClick(diary._id.toString()) }
+    Row(
+        modifier = Modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { onClick(diary._id.toString()) }
     ) {
         Spacer(modifier = Modifier.width(14.dp))
         Surface(

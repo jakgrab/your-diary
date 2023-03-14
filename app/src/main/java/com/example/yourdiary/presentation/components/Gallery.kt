@@ -1,5 +1,6 @@
 package com.example.yourdiary.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.MaterialTheme
@@ -76,21 +77,37 @@ fun LastImageOverlay(
     remainingImages: Int,
     imageShape: CornerBasedShape
 ) {
-    Box(contentAlignment = Alignment.Center) {
-        Surface(
-            modifier = Modifier
-                .clip(imageShape)
-                .size(imageSize),
-            color = MaterialTheme.colorScheme.primaryContainer
-        ) {
-            Text(
-                text = "+$remainingImages",
-                style = TextStyle(
-                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
-                    fontWeight = FontWeight.Medium
-                ),
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
+//    Box(contentAlignment = Alignment.Center) {
+//        Surface(
+//            modifier = Modifier
+//                .clip(imageShape)
+//                .size(imageSize),
+//            color = MaterialTheme.colorScheme.primaryContainer
+//        ) {
+//            Text(
+//                text = "+$remainingImages",
+//                style = TextStyle(
+//                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+//                    fontWeight = FontWeight.Medium
+//                ),
+//                color = MaterialTheme.colorScheme.onPrimaryContainer
+//            )
+//        }
+//    }
+    Box(
+        modifier = Modifier
+            .clip(imageShape)
+            .size(imageSize)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "+$remainingImages",
+            style = TextStyle(
+                fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                fontWeight = FontWeight.Medium
+            ),
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
