@@ -9,8 +9,12 @@ import androidx.compose.runtime.Composable
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(onMenuClicked: () -> Unit) {
+fun HomeTopBar(
+    scrollBehavior: TopAppBarScrollBehavior,
+    onMenuClicked: () -> Unit
+) {
     TopAppBar(
+        scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(onClick = onMenuClicked) {
                 Icon(
@@ -32,11 +36,6 @@ fun HomeTopBar(onMenuClicked: () -> Unit) {
                 )
             }
         },
-//        colors = TopAppBarDefaults.topAppBarColors(
-//            containerColor = MaterialTheme.colorScheme.primary.copy(
-//                alpha = 0.23f
-//            )
-//        )
     )
 }
 

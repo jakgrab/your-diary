@@ -36,11 +36,6 @@ fun HomeContent(
                     top = paddingValues.calculateTopPadding(),
                     bottom = paddingValues.calculateBottomPadding()
                 )
-//                .padding(horizontal = 24.dp)
-//                .padding(
-//                    top = paddingValues.calculateTopPadding(),
-//                    bottom = paddingValues.calculateBottomPadding()
-//                )
         ) {
             diaryNotes.forEach { (localDate, diaries) ->
 
@@ -65,8 +60,9 @@ fun HomeContent(
 fun DateHeader(localDate: LocalDate) {
     Row(
         modifier = Modifier
-            .padding(vertical = 14.dp)
-            .background(MaterialTheme.colorScheme.surface),
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(horizontalAlignment = Alignment.End) {

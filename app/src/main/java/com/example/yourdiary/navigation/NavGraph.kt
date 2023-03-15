@@ -16,6 +16,7 @@ import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.yourdiary.presentation.screens.home.HomeScreen
 import com.example.yourdiary.presentation.screens.home.HomeViewModel
+import com.example.yourdiary.presentation.screens.write.WriteScreen
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.util.RequestState
@@ -48,7 +49,11 @@ fun SetupNavGraph(
             },
             onDateLoaded = onDateLoaded
         )
-        writeRoute()
+        writeRoute(
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
     }
 }
 
@@ -151,7 +156,7 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-fun NavGraphBuilder.writeRoute() {
+fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
     composable(
         route = Screen.Write.route,
         arguments = listOf(
@@ -162,6 +167,6 @@ fun NavGraphBuilder.writeRoute() {
             }
         )
     ) {
-
+        WriteScreen(onBackPressed = onBackPressed)
     }
 }
