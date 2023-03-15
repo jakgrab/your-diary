@@ -24,7 +24,8 @@ fun HomeScreen(
     drawerState: DrawerState,
     onMenuClicked: () -> Unit,
     onSignOutClicked: () -> Unit,
-    navigateToWrite: () -> Unit
+    navigateToWrite: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()

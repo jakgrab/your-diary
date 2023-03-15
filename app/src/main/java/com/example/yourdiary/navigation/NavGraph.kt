@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.yourdiary.model.Diary
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
@@ -20,6 +21,8 @@ import com.example.yourdiary.presentation.screens.write.WriteScreen
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.util.RequestState
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -47,7 +50,10 @@ fun SetupNavGraph(
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication.route)
             },
-            onDateLoaded = onDateLoaded
+            onDateLoaded = onDateLoaded,
+            navigateToWriteWithArgs = {diaryId ->
+                navController.navigate(Screen.Write.passDiaryId(diaryId = diaryId))
+            }
         )
         writeRoute(
             onBackPressed = {
@@ -105,6 +111,7 @@ fun NavGraphBuilder.authenticationRoute(
 
 fun NavGraphBuilder.homeRoute(
     navigateToWrite: () -> Unit,
+    navigateToWriteWithArgs: (String) -> Unit,
     navigateToAuth: () -> Unit,
     onDateLoaded: () -> Unit
 ) {
@@ -129,13 +136,10 @@ fun NavGraphBuilder.homeRoute(
                 scope.launch { drawerState.open() }
             },
             onSignOutClicked = { signOutDialogOpened = true },
-            navigateToWrite = navigateToWrite
+            navigateToWrite = navigateToWrite,
+            navigateToWriteWithArgs = navigateToWriteWithArgs
         )
 
-//        LaunchedEffect(key1 = Unit) {
-//            MongoDB.configureTheRealm()
-//        }
-//
         DisplayAlertDialog(
             title = "Sign Out",
             message = "Are you sure you want to Sign Out from your Google Account?",
@@ -151,12 +155,12 @@ fun NavGraphBuilder.homeRoute(
                 }
             }
         )
-
-
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
+
     composable(
         route = Screen.Write.route,
         arguments = listOf(
@@ -167,6 +171,12 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             }
         )
     ) {
-        WriteScreen(onBackPressed = onBackPressed)
+        val pagerState = rememberPagerState()
+        WriteScreen(
+            selectedDiary = null,
+            pagerState = pagerState,
+            onBackPressed = onBackPressed,
+            onDeleteConfirmed = {}
+        )
     }
 }
