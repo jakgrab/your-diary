@@ -2,6 +2,7 @@
 
 package com.example.yourdiary.navigation
 
+import android.util.Log
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,6 +19,7 @@ import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
 import com.example.yourdiary.presentation.screens.home.HomeScreen
 import com.example.yourdiary.presentation.screens.home.HomeViewModel
 import com.example.yourdiary.presentation.screens.write.WriteScreen
+import com.example.yourdiary.presentation.screens.write.WriteViewModel
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.util.RequestState
@@ -51,7 +53,7 @@ fun SetupNavGraph(
                 navController.navigate(Screen.Authentication.route)
             },
             onDateLoaded = onDateLoaded,
-            navigateToWriteWithArgs = {diaryId ->
+            navigateToWriteWithArgs = { diaryId ->
                 navController.navigate(Screen.Write.passDiaryId(diaryId = diaryId))
             }
         )
@@ -171,10 +173,25 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             }
         )
     ) {
+        val viewModel: WriteViewModel = viewModel()
+        val uiState = viewModel.uiState
+
+        LaunchedEffect(key1 = uiState) {
+            Log.d("SelectedDiary", "${uiState.selectedDiaryId}")
+        }
+
         val pagerState = rememberPagerState()
+
         WriteScreen(
+            uiState = uiState,
             selectedDiary = null,
             pagerState = pagerState,
+            onTitleChanged = {
+                viewModel.setTitle(it)
+            },
+            onDescriptionChanged = {
+                viewModel.setDescription(it)
+            },
             onBackPressed = onBackPressed,
             onDeleteConfirmed = {}
         )

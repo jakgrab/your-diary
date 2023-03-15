@@ -61,7 +61,7 @@ fun HomeScreen(
                     HomeContent(
                         paddingValues = it,
                         diaryNotes = diaries.data,
-                        onClick = {}
+                        onClick = navigateToWriteWithArgs
                     )
                 }
                 is RequestState.Error -> {
