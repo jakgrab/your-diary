@@ -77,8 +77,9 @@ class WriteViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (uiState.selectedDiaryId == null) {
                 insertDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            } else{
+                updateDairy(diary = diary, onSuccess = onSuccess, onError = onError)
             }
-            updateDairy(diary = diary, onSuccess = onSuccess, onError = onError)
         }
     }
 
@@ -106,6 +107,7 @@ class WriteViewModel(
     ) {
         val result = MongoDB.updateDiary(diary.apply {
             _id = ObjectId.Companion.from(uiState.selectedDiaryId!!)
+            date = uiState.selectedDiary!!.date
         })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
