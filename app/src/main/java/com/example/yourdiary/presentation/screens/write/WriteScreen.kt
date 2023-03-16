@@ -21,7 +21,8 @@ fun WriteScreen(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onDeleteConfirmed: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    onSaveClicked: (Diary) -> Unit
 ) {
     // update the affair when selecting an existing Diary
     LaunchedEffect(key1 = uiState.affair) {
@@ -39,13 +40,15 @@ fun WriteScreen(
         }
     ) {
         WriteContent(
+            uiState = uiState,
             pagerState = pagerState,
             currentPage = currentPage,
             title = uiState.title,
             onTitleChanged = onTitleChanged,
             description = uiState.description,
             onDescriptionChanged = onDescriptionChanged,
-            paddingValues = it
+            paddingValues = it,
+            onSaveClicked = onSaveClicked
         )
     }
 }

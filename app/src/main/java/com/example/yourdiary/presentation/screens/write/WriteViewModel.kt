@@ -39,20 +39,21 @@ class WriteViewModel(
     private fun fetchSelectedDiary() {
         if (uiState.selectedDiaryId != null) {
             viewModelScope.launch(Dispatchers.Main) {
-                val diary = MongoDB.getSelectedDiary(
+                MongoDB.getSelectedDiary(
                     diaryId = ObjectId.Companion.from(uiState.selectedDiaryId!!)
-                )
-                if (diary is RequestState.Success) {
-                    setSelectedDiary(diary.data)
-                    setTitle(diary.data.title)
-                    setDescription(diary.data.description)
-                    setAffair(affair = Affair.valueOf(diary.data.affair))
+                ).collect {diary ->
+                    if (diary is RequestState.Success) {
+                        setSelectedDiary(diary.data)
+                        setTitle(diary.data.title)
+                        setDescription(diary.data.description)
+                        setAffair(affair = Affair.valueOf(diary.data.affair))
+                    }
                 }
             }
         }
     }
 
-    fun setSelectedDiary(diary: Diary) {
+    private fun setSelectedDiary(diary: Diary) {
         uiState = uiState.copy(selectedDiary = diary)
     }
     fun setTitle(title: String) {
@@ -63,8 +64,27 @@ class WriteViewModel(
         uiState = uiState.copy(description = description)
     }
 
-    fun setAffair(affair: Affair) {
+    private fun setAffair(affair: Affair) {
         uiState = uiState.copy(affair = affair)
+    }
+
+    fun insertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = MongoDB.insertDiary(diary = diary)
+            if (result is RequestState.Success) {
+                withContext(Dispatchers.Main) {
+                    onSuccess()
+                }
+            } else if (result is RequestState.Error) {
+                withContext(Dispatchers.Main) {
+                    onError(result.error.message.toString())
+                }
+            }
+        }
     }
 }
 

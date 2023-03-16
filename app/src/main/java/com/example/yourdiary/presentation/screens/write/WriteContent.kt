@@ -1,18 +1,15 @@
 package com.example.yourdiary.presentation.screens.write
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.PageSize
-import androidx.compose.foundation.pager.PagerDefaults
-import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,28 +23,27 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.yourdiary.model.Affair
+import com.example.yourdiary.model.Diary
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
-import com.google.accompanist.pager.rememberPagerState
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun WriteContent(
+    uiState: UiState,
     pagerState: PagerState,
     currentPage: Int,
     title: String,
     onTitleChanged: (String) -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    onSaveClicked: (Diary) -> Unit
 ) {
     val scrollState = rememberScrollState()
-//    val currentPage by remember {
-//        derivedStateOf {
-//            mutableStateOf(0)
-//        }
-//    }
+
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -76,9 +72,6 @@ fun WriteContent(
                     state = pagerState,
                     count = Affair.values().size
                 ) { page ->
-
-                    //currentPage.value = this.currentPage
-
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -158,7 +151,23 @@ fun WriteContent(
                     .fillMaxWidth()
                     .height(54.dp),
                 shape = Shapes().small,
-                onClick = { /*TODO*/ }
+                onClick = {
+                    if (uiState.title.isNotEmpty() && uiState.description.isNotEmpty()) {
+                        onSaveClicked(
+                            Diary().apply {
+                                this.title = uiState.title
+                                this.description = uiState.description
+                                this.affair = Affair.values()[currentPage].name
+                            }
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Fields cannot be empty",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             ) {
                 Text(text = "Save")
             }

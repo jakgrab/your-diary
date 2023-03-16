@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.yourdiary.model.Affair
-import com.example.yourdiary.model.Diary
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
@@ -196,7 +195,18 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                 viewModel.setDescription(it)
             },
             onBackPressed = onBackPressed,
-            onDeleteConfirmed = {}
+            onDeleteConfirmed = {},
+            onSaveClicked = {
+                viewModel.insertDiary(
+                    diary = it,
+                    onSuccess = {
+                        onBackPressed()
+                    },
+                    onError = {
+
+                    }
+                )
+            }
         )
     }
 }

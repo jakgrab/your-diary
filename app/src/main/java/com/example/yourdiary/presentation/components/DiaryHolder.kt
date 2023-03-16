@@ -64,7 +64,11 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
             tonalElevation = Elevation.Level1
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                DiaryHeader(affairName = diary.affair, time = diary.date.toInstant())
+                DiaryHeader(
+                    title = diary.title,
+                    affairName = diary.affair,
+                    time = diary.date.toInstant()
+                )
                 Text(
                     text = diary.description,
                     modifier = Modifier.padding(14.dp),
@@ -106,17 +110,21 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
 }
 
 @Composable
-fun DiaryHeader(affairName: String, time: Instant) {
+fun DiaryHeader(title: String, affairName: String, time: Instant) {
     val affair by remember { mutableStateOf(Affair.valueOf(affairName)) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .height(40.dp)
             .background(affair.containerColor)
             .padding(horizontal = 14.dp, vertical = 7.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.weight(3f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Image(
                 modifier = Modifier.size(18.dp),
                 painter = painterResource(id = affair.icon),
@@ -124,12 +132,16 @@ fun DiaryHeader(affairName: String, time: Instant) {
             )
             Spacer(modifier = Modifier.width(7.dp))
             Text(
-                text = affair.name,
+                text = title,
                 color = affair.contentColor,
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                softWrap = true
             )
         }
         Text(
+            modifier = Modifier.weight(1f),
             text = SimpleDateFormat("hh:mm a", Locale.US)
                 .format(Date.from(time)),
             color = affair.contentColor,
