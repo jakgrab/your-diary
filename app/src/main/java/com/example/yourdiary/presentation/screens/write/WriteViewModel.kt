@@ -41,7 +41,7 @@ class WriteViewModel(
             viewModelScope.launch(Dispatchers.Main) {
                 MongoDB.getSelectedDiary(
                     diaryId = ObjectId.Companion.from(uiState.selectedDiaryId!!)
-                ).collect {diary ->
+                ).collect { diary ->
                     if (diary is RequestState.Success) {
                         setSelectedDiary(diary.data)
                         setTitle(diary.data.title)
@@ -56,6 +56,7 @@ class WriteViewModel(
     private fun setSelectedDiary(diary: Diary) {
         uiState = uiState.copy(selectedDiary = diary)
     }
+
     fun setTitle(title: String) {
         uiState = uiState.copy(title = title)
     }
@@ -68,23 +69,54 @@ class WriteViewModel(
         uiState = uiState.copy(affair = affair)
     }
 
-    fun insertDiary(
+    fun updateOrInsertDiary(
         diary: Diary,
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = MongoDB.insertDiary(diary = diary)
-            if (result is RequestState.Success) {
-                withContext(Dispatchers.Main) {
-                    onSuccess()
-                }
-            } else if (result is RequestState.Error) {
-                withContext(Dispatchers.Main) {
-                    onError(result.error.message.toString())
-                }
+            if (uiState.selectedDiaryId == null) {
+                insertDiary(diary = diary, onSuccess = onSuccess, onError = onError)
+            }
+            updateDairy(diary = diary, onSuccess = onSuccess, onError = onError)
+        }
+    }
+
+    private suspend fun insertDiary(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val result = MongoDB.insertDiary(diary = diary)
+        if (result is RequestState.Success) {
+            withContext(Dispatchers.Main) {
+                onSuccess()
+            }
+        } else if (result is RequestState.Error) {
+            withContext(Dispatchers.Main) {
+                onError(result.error.message.toString())
             }
         }
+    }
+
+    private suspend fun updateDairy(
+        diary: Diary,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val result = MongoDB.updateDiary(diary.apply {
+            _id = ObjectId.Companion.from(uiState.selectedDiaryId!!)
+        })
+        if (result is RequestState.Success) {
+            withContext(Dispatchers.Main) {
+                onSuccess()
+            }
+        } else if (result is RequestState.Error) {
+            withContext(Dispatchers.Main) {
+                onError(result.error.message.toString())
+            }
+        }
+
     }
 }
 
