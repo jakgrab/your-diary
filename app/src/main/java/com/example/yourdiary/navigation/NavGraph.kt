@@ -12,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.yourdiary.model.Affair
 import com.example.yourdiary.model.Diary
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
@@ -181,11 +182,13 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         }
 
         val pagerState = rememberPagerState()
+        val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
         WriteScreen(
             uiState = uiState,
-            selectedDiary = null,
+            affairName = { Affair.values()[pageNumber].name },
             pagerState = pagerState,
+            currentPage = pageNumber,
             onTitleChanged = {
                 viewModel.setTitle(it)
             },

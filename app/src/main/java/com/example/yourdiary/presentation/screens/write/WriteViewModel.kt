@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.yourdiary.data.repository.MongoDB
 import com.example.yourdiary.model.Affair
+import com.example.yourdiary.model.Diary
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.util.RequestState
 import io.realm.kotlin.types.ObjectId
@@ -42,15 +43,18 @@ class WriteViewModel(
                     diaryId = ObjectId.Companion.from(uiState.selectedDiaryId!!)
                 )
                 if (diary is RequestState.Success) {
+                    setSelectedDiary(diary.data)
                     setTitle(diary.data.title)
                     setDescription(diary.data.description)
                     setAffair(affair = Affair.valueOf(diary.data.affair))
-
                 }
             }
         }
     }
 
+    fun setSelectedDiary(diary: Diary) {
+        uiState = uiState.copy(selectedDiary = diary)
+    }
     fun setTitle(title: String) {
         uiState = uiState.copy(title = title)
     }
@@ -66,6 +70,7 @@ class WriteViewModel(
 
 data class UiState(
     val selectedDiaryId: String? = null,
+    val selectedDiary: Diary? = null,
     val title: String = "",
     val description: String = "",
     val affair: Affair = Affair.WateringPlants

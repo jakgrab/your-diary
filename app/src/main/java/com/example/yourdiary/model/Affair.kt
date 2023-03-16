@@ -15,7 +15,7 @@ enum class Affair(
         containerColor = WorkColor
     ),
     Fun(
-    icon = R.drawable.`fun`,
+        icon = R.drawable.`fun`,
         contentColor = Color.White,
         containerColor = FunColor
     ),

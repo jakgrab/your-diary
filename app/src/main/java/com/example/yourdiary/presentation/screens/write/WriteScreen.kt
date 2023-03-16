@@ -15,8 +15,9 @@ import com.google.accompanist.pager.PagerState
 @Composable
 fun WriteScreen(
     uiState: UiState,
-    selectedDiary: Diary?,
+    affairName: () -> String,
     pagerState: PagerState,
+    currentPage: Int,
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onDeleteConfirmed: () -> Unit,
@@ -30,7 +31,8 @@ fun WriteScreen(
     Scaffold(
         topBar = {
             WriteTopBar(
-                selectedDiary = selectedDiary,
+                selectedDiary = uiState.selectedDiary,
+                affairName = affairName,
                 onBackPressed = onBackPressed,
                 onDeleteConfirmed = onDeleteConfirmed
             )
@@ -38,6 +40,7 @@ fun WriteScreen(
     ) {
         WriteContent(
             pagerState = pagerState,
+            currentPage = currentPage,
             title = uiState.title,
             onTitleChanged = onTitleChanged,
             description = uiState.description,
