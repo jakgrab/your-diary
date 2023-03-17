@@ -11,10 +11,13 @@ import com.example.yourdiary.model.Affair
 import com.example.yourdiary.model.Diary
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.util.RequestState
+import com.example.yourdiary.util.toRealmInstant
 import io.realm.kotlin.types.ObjectId
+import io.realm.kotlin.types.RealmInstant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.ZonedDateTime
 
 class WriteViewModel(
     private val savedStateHandle: SavedStateHandle
@@ -69,6 +72,11 @@ class WriteViewModel(
         uiState = uiState.copy(affair = affair)
     }
 
+    fun updateDateAndTime(zonedDateTime: ZonedDateTime) {
+        uiState = uiState.copy(updatedDateTime = zonedDateTime.toInstant().toRealmInstant())
+
+    }
+
     fun updateOrInsertDiary(
         diary: Diary,
         onSuccess: () -> Unit,
@@ -77,7 +85,7 @@ class WriteViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             if (uiState.selectedDiaryId == null) {
                 insertDiary(diary = diary, onSuccess = onSuccess, onError = onError)
-            } else{
+            } else {
                 updateDairy(diary = diary, onSuccess = onSuccess, onError = onError)
             }
         }
@@ -88,7 +96,11 @@ class WriteViewModel(
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     ) {
-        val result = MongoDB.insertDiary(diary = diary)
+        val result = MongoDB.insertDiary(diary = diary.apply {
+            if (uiState.updatedDateTime != null) {
+                date = uiState.updatedDateTime!!
+            }
+        })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
                 onSuccess()
@@ -107,7 +119,11 @@ class WriteViewModel(
     ) {
         val result = MongoDB.updateDiary(diary.apply {
             _id = ObjectId.Companion.from(uiState.selectedDiaryId!!)
-            date = uiState.selectedDiary!!.date
+            date = if (uiState.updatedDateTime != null) {
+                uiState.updatedDateTime!!
+            } else {
+                uiState.selectedDiary!!.date
+            }
         })
         if (result is RequestState.Success) {
             withContext(Dispatchers.Main) {
@@ -127,5 +143,6 @@ data class UiState(
     val selectedDiary: Diary? = null,
     val title: String = "",
     val description: String = "",
-    val affair: Affair = Affair.WateringPlants
+    val affair: Affair = Affair.WateringPlants,
+    val updatedDateTime: RealmInstant? = null,
 )

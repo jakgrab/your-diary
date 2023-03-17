@@ -9,6 +9,7 @@ import com.example.yourdiary.model.Affair
 import com.example.yourdiary.model.Diary
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerState
+import java.time.ZonedDateTime
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPagerApi::class)
@@ -21,6 +22,7 @@ fun WriteScreen(
     onTitleChanged: (String) -> Unit,
     onDescriptionChanged: (String) -> Unit,
     onDeleteConfirmed: () -> Unit,
+    onDateAndTimeUpdated: (ZonedDateTime) -> Unit,
     onBackPressed: () -> Unit,
     onSaveClicked: (Diary) -> Unit
 ) {
@@ -34,6 +36,7 @@ fun WriteScreen(
             WriteTopBar(
                 selectedDiary = uiState.selectedDiary,
                 affairName = affairName,
+                onDateAndTimeUpdated = onDateAndTimeUpdated,
                 onBackPressed = onBackPressed,
                 onDeleteConfirmed = onDeleteConfirmed
             )

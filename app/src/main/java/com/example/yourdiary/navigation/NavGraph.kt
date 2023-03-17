@@ -196,13 +196,16 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
             },
             onBackPressed = onBackPressed,
             onDeleteConfirmed = {},
+            onDateAndTimeUpdated = {
+                viewModel.updateDateAndTime(zonedDateTime = it)
+            },
             onSaveClicked = {
                 viewModel.updateOrInsertDiary(
                     diary = it,
                     onSuccess = {
                         onBackPressed()
                     },
-                    onError = {error ->
+                    onError = { error ->
                         Log.d("UPDATE", error)
                     }
                 )
