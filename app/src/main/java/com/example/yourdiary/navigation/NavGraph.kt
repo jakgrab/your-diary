@@ -3,8 +3,10 @@
 package com.example.yourdiary.navigation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -175,6 +177,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
     ) {
         val viewModel: WriteViewModel = viewModel()
         val uiState = viewModel.uiState
+        val context = LocalContext.current
 
         LaunchedEffect(key1 = uiState) {
             Log.d("SelectedDiary", "${uiState.selectedDiaryId}")
@@ -195,7 +198,17 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                 viewModel.setDescription(it)
             },
             onBackPressed = onBackPressed,
-            onDeleteConfirmed = {},
+            onDeleteConfirmed = {
+                viewModel.deleteDiary(
+                    onSuccess = {
+                        Toast.makeText(context, "Diary Deleted", Toast.LENGTH_SHORT).show()
+                        onBackPressed()
+                    },
+                    onError = {error ->
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            },
             onDateAndTimeUpdated = {
                 viewModel.updateDateAndTime(zonedDateTime = it)
             },
@@ -206,7 +219,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                         onBackPressed()
                     },
                     onError = { error ->
-                        Log.d("UPDATE", error)
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                     }
                 )
             }
