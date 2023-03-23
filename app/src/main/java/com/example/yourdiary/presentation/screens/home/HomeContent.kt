@@ -2,12 +2,14 @@ package com.example.yourdiary.presentation.screens.home
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
@@ -26,24 +28,29 @@ fun HomeContent(
     diaryNotes: Map<LocalDate, List<Diary>>,
     onClick: (String) -> Unit
 ) {
+
     if (diaryNotes.isNotEmpty()) {
         LazyColumn(
             modifier = Modifier
-                .padding(horizontal = 24.dp)
+                .padding(horizontal = 12.dp)
+                .padding(end = 20.dp) // TODO play with padding for the badge to work
                 .navigationBarsPadding()
                 .padding(top = paddingValues.calculateTopPadding())
+
         ) {
             diaryNotes.forEach { (localDate, diaries) ->
 
                 stickyHeader(key = localDate) {
                     DateHeader(localDate = localDate)
                 }
-
                 items(
                     items = diaries,
                     key = { it._id.toString() }
                 ) { diary ->
-                    DiaryHolder(diary = diary, onClick = onClick)
+                    DiaryHolder(
+                        diary = diary,
+                        onClick = onClick,
+                    )
                 }
             }
         }

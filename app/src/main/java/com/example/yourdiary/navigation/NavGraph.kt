@@ -15,6 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.yourdiary.model.Affair
+import com.example.yourdiary.model.GalleryImage
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
@@ -25,6 +26,7 @@ import com.example.yourdiary.presentation.screens.write.WriteViewModel
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
 import com.example.yourdiary.model.RequestState
+import com.example.yourdiary.model.rememberGalleryState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -184,12 +186,14 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         }
 
         val pagerState = rememberPagerState()
+        val galleryState = rememberGalleryState()
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
         WriteScreen(
             uiState = uiState,
             affairName = { Affair.values()[pageNumber].name },
             pagerState = pagerState,
+            galleryState = galleryState,
             currentPage = pageNumber,
             onTitleChanged = {
                 viewModel.setTitle(it)
@@ -221,6 +225,11 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                     onError = { error ->
                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                     }
+                )
+            },
+            onImageSelected = {image ->
+                galleryState.addImage(
+                    GalleryImage(image)
                 )
             }
         )

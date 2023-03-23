@@ -30,21 +30,27 @@ import com.example.yourdiary.util.toInstant
 import io.realm.kotlin.ext.realmListOf
 import java.text.SimpleDateFormat
 import java.time.Instant
-import java.time.LocalTime
 import java.util.*
 
 @Composable
-fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
+fun DiaryHolder(
+    diary: Diary,
+    onClick: (String) -> Unit,
+) {
     var componentHeight by remember { mutableStateOf(0.dp) }
-    val localDensity = LocalDensity.current
     var galleryOpened by remember { mutableStateOf(false) }
+    val localDensity = LocalDensity.current
+
 
     Row(
         modifier = Modifier
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
-            ) { onClick(diary._id.toString()) }
+            ) {
+                onClick(diary._id.toString())
+            }
+
     ) {
         Spacer(modifier = Modifier.width(14.dp))
         Surface(
@@ -108,6 +114,7 @@ fun DiaryHolder(diary: Diary, onClick: (String) -> Unit) {
 
     }
 }
+
 
 @Composable
 fun DiaryHeader(title: String, affairName: String, time: Instant) {
