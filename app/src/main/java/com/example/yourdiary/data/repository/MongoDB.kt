@@ -2,10 +2,9 @@ package com.example.yourdiary.data.repository
 
 import com.example.yourdiary.model.Diary
 import com.example.yourdiary.util.Constants.APP_ID
-import com.example.yourdiary.util.RequestState
+import com.example.yourdiary.model.RequestState
 import com.example.yourdiary.util.toInstant
 import io.realm.kotlin.Realm
-import io.realm.kotlin.ext.asFlow
 import io.realm.kotlin.ext.query
 import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App

@@ -1,7 +1,7 @@
 package com.example.yourdiary.data.repository
 
 import com.example.yourdiary.model.Diary
-import com.example.yourdiary.util.RequestState
+import com.example.yourdiary.model.RequestState
 import io.realm.kotlin.types.ObjectId
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate

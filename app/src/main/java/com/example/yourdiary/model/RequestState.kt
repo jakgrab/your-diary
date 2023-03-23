@@ -1,4 +1,4 @@
-package com.example.yourdiary.util
+package com.example.yourdiary.model
 
 sealed class RequestState<out T> {
     object Idle : RequestState<Nothing>()
