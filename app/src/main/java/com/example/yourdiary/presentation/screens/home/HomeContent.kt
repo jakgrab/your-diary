@@ -30,12 +30,8 @@ fun HomeContent(
         LazyColumn(
             modifier = Modifier
                 .padding(horizontal = 24.dp)
-                .padding(
-                    start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),// + 24.dp,
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),// + 24.dp,
-                    top = paddingValues.calculateTopPadding(),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
+                .navigationBarsPadding()
+                .padding(top = paddingValues.calculateTopPadding())
         ) {
             diaryNotes.forEach { (localDate, diaries) ->
 
@@ -129,9 +125,4 @@ fun EmptyPage(
             )
         )
     }
-}
-
-@Composable
-fun TEST() {
-
 }

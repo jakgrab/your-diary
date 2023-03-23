@@ -10,11 +10,15 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -27,6 +31,7 @@ import com.example.yourdiary.model.Diary
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -42,8 +47,13 @@ fun WriteContent(
     onSaveClicked: (Diary) -> Unit
 ) {
     val scrollState = rememberScrollState()
-
+    val focusManager = LocalFocusManager.current
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = scrollState.maxValue) {
+        scrollState.scrollTo(scrollState.maxValue)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -119,7 +129,14 @@ fun WriteContent(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(onNext = {}),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        coroutineScope.launch {
+                            scrollState.animateScrollTo(scrollState.maxValue)
+                            focusManager.moveFocus(FocusDirection.Down)
+                        }
+                    }
+                ),
                 maxLines = 1,
                 singleLine = true
             )
@@ -141,7 +158,9 @@ fun WriteContent(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(onNext = {})
+                keyboardActions = KeyboardActions(
+                    onNext = { focusManager.clearFocus() }
+                )
             )
         }
 
