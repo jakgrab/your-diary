@@ -10,6 +10,7 @@ import com.example.yourdiary.navigation.Screen
 import com.example.yourdiary.navigation.SetupNavGraph
 import com.example.yourdiary.ui.theme.YourDiaryTheme
 import com.example.yourdiary.util.Constants.APP_ID
+import com.google.firebase.FirebaseApp
 import io.realm.kotlin.mongodb.App
 
 class MainActivity : ComponentActivity() {
@@ -17,6 +18,7 @@ class MainActivity : ComponentActivity() {
     var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         installSplashScreen().setKeepOnScreenCondition {
             keepSplashOpened
         }
