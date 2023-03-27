@@ -11,8 +11,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.yourdiary.data.repository.MongoDB
 import com.example.yourdiary.model.*
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
+import com.example.yourdiary.util.fetchImagesFromFirebase
 import com.example.yourdiary.util.toRealmInstant
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import io.realm.kotlin.types.ObjectId
 import io.realm.kotlin.types.RealmInstant
@@ -55,10 +58,30 @@ class WriteViewModel(
                             setTitle(diary.data.title)
                             setDescription(diary.data.description)
                             setAffair(affair = Affair.valueOf(diary.data.affair))
+
+                            fetchImagesFromFirebase(
+                                remoteImagePaths = diary.data.images,
+                                onImageDownload = { downloadedImage ->
+                                    galleryState.addImage(
+                                        GalleryImage(
+                                            image = downloadedImage,
+                                            remoteImagePath = extractRemoteImagePath(
+                                                fullImageUrl = downloadedImage.toString()
+                                            )
+                                        )
+                                    )
+                                }
+                            )
                         }
                     }
             }
         }
+    }
+
+    private fun extractRemoteImagePath(fullImageUrl: String): String {
+        val chunks = fullImageUrl.split("%2F")
+        val imageName = chunks[2].split("?").first()
+        return "images/${Firebase.auth.currentUser?.uid}/$imageName"
     }
 
     private fun setSelectedDiary(diary: Diary) {
