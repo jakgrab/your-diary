@@ -15,7 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.yourdiary.model.Affair
-import com.example.yourdiary.model.GalleryImage
+import com.example.yourdiary.model.RequestState
 import com.example.yourdiary.presentation.components.DisplayAlertDialog
 import com.example.yourdiary.presentation.screens.auth.AuthenticationScreen
 import com.example.yourdiary.presentation.screens.auth.AuthenticationViewModel
@@ -25,8 +25,6 @@ import com.example.yourdiary.presentation.screens.write.WriteScreen
 import com.example.yourdiary.presentation.screens.write.WriteViewModel
 import com.example.yourdiary.util.Constants.APP_ID
 import com.example.yourdiary.util.Constants.WRITE_SCREEN_ARGUMENT_KEY
-import com.example.yourdiary.model.RequestState
-import com.example.yourdiary.model.rememberGalleryState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.rememberPagerState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -184,6 +182,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
     ) {
         val viewModel: WriteViewModel = viewModel()
         val uiState = viewModel.uiState
+        val galleryState = viewModel.galleryState
         val context = LocalContext.current
 
         LaunchedEffect(key1 = uiState) {
@@ -191,7 +190,6 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
         }
 
         val pagerState = rememberPagerState()
-        val galleryState = rememberGalleryState()
         val pageNumber by remember { derivedStateOf { pagerState.currentPage } }
 
         WriteScreen(
@@ -213,7 +211,7 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                         Toast.makeText(context, "Diary Deleted", Toast.LENGTH_SHORT).show()
                         onBackPressed()
                     },
-                    onError = {error ->
+                    onError = { error ->
                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                     }
                 )
@@ -232,10 +230,10 @@ fun NavGraphBuilder.writeRoute(onBackPressed: () -> Unit) {
                     }
                 )
             },
-            onImageSelected = {image ->
-                galleryState.addImage(
-                    GalleryImage(image)
-                )
+            onImageSelected = { image ->
+                val type = context.contentResolver.getType(image)?.split("/")?.last() ?: "jpg"
+                Log.d("WriteViewModel", "uri: $image")
+                viewModel.addImage(image = image, imageType = type)
             }
         )
     }

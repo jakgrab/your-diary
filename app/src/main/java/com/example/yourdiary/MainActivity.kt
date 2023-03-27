@@ -18,11 +18,10 @@ class MainActivity : ComponentActivity() {
     var keepSplashOpened = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
         installSplashScreen().setKeepOnScreenCondition {
             keepSplashOpened
         }
-
+        FirebaseApp.initializeApp(this)
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
